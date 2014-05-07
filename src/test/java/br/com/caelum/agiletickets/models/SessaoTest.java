@@ -1,49 +1,47 @@
 package br.com.caelum.agiletickets.models;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class SessaoTest {
 
-	@Test
-	public void deveVender1ingressoSeHa2vagas() throws Exception {
-		Sessao sessao = new Sessao();
-        sessao.setTotalIngressos(2);
+	private Sessao sessao;
 
-        Assert.assertTrue(sessao.podeReservar(1));
-	}
-	
+	@Before
+	public void setup() {
+		this.sessao = new Sessao();
+	}	
+
 	@Test
-	public void deveVender5ingressosSeHa10vagas() throws Exception {
-		Sessao sessao = new Sessao();
-		sessao.setTotalIngressos(10);
+	public void deveVenderSeHaMaisVagasQueRequisitado() throws Exception {
+		this.sessao.setTotalIngressos(10);
+
+		Assert.assertTrue(this.sessao.podeReservar(5));
+	}
+
+	@Test
+	public void naoDeveVenderSeHaMenosVagasQueRequisitado() throws Exception {
+		this.sessao.setTotalIngressos(2);
+
+		Assert.assertFalse(this.sessao.podeReservar(3));
+	}
+
+	@Test
+	public void reservarIngressosDeveDiminuirONumeroDeIngressosDisponiveis()
+			throws Exception {
+		this.sessao.setTotalIngressos(5);
+
+		this.sessao.reserva(3);
 		
-		Assert.assertTrue(sessao.podeReservar(5));
+		Assert.assertEquals(2, this.sessao.getIngressosDisponiveis().intValue());
 	}
 
 	@Test
-	public void naoDeveVender3ingressoSeHa2vagas() throws Exception {
-		Sessao sessao = new Sessao();
-		sessao.setTotalIngressos(2);
+	public void deveVenderSeHaMesmaQuantidadeDeVagasQueRequisitado() {
+		this.sessao.setTotalIngressos(2);
 
-		Assert.assertFalse(sessao.podeReservar(3));
+		Assert.assertTrue(this.sessao.podeReservar(2));
 	}
 
-	@Test
-	public void reservarIngressosDeveDiminuirONumeroDeIngressosDisponiveis() throws Exception {
-		Sessao sessao = new Sessao();
-		sessao.setTotalIngressos(5);
-
-		sessao.reserva(3);
-		Assert.assertEquals(2, sessao.getIngressosDisponiveis().intValue());
-	}
-	
-	@Test
-	public void deveVender2IngressosSeHa2Vagas(){
-		Sessao sessao = new Sessao();
-		sessao.setTotalIngressos(2);
-		
-		Assert.assertTrue(sessao.podeReservar(2));
-	}
-	
 }
